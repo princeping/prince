@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.prince.guide.dao.GuideDao">
+
+    <update id="updateHospital" parameterType="map">
+        update hospital set hcount = #{hcount},hallcost = #{hallcost},hreimbursecost = #{hreimbursecost},hday = #{hday},hrecovery = #{hrecovery},
+          ocount = #{ocount},ohallcost = #{ohallcost},ohreimbursecost = #{ohreimbursecost},ohrecovery = #{ohrecovery}
+        where hospitalid = #{hospitalid}
+    </update>
+
+    <select id="queryHdisease" parameterType="list" resultType="string">
+        select margeid
+        from hdisease where margeid in
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <insert id="insertHdisease" parameterType="list">
+        insert into hdisease(hospitalid,diseaseid,hcount,hallcost,hreimbursecost,hday
+        ,hrecovery,ocount,ohallcost,ohreimbursecost,ohrecovery,margeid)values
+         <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.hospitalid},#{item.diseaseid},#{item.hcount},#{item.hallcost},#{item.hreimbursecost},#{item.hday}
+            ,#{item.hrecovery},#{item.ocount},#{item.ohallcost},#{item.ohreimbursecost},#{item.ohrecovery},#{item.margeid})
+        </foreach>
+    </insert>
+
+    <update id="updateHdisease" parameterType="list">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update hdisease set  
+            hcount=#{item.hcount},hallcost=#{item.hallcost},hreimbursecost=#{item.hreimbursecost},hday=#{item.hday},hrecovery=#{item.hrecovery},
+            ocount=#{item.ocount},ohallcost=#{item.ohallcost},ohreimbursecost=#{item.ohreimbursecost},ohrecovery=#{item.ohrecovery}
+            where hospitalid = '#{item.hospitalid}' and diseaseid = '#{item.diseaseid}'
+        </foreach>
+    </update>
+
+	<update id="updateDisease" parameterType="map">
+		update disease set hcount = #{hcount},hallcost = #{hallcost},hreimbursecost = #{hreimbursecost},
+				hday = #{hday},hrecovery = #{hrecovery},ocount = #{ocount},ohallcost = #{ohallcost},
+				ohreimbursecost = #{ohreimbursecost},ohrecovery = #{ohrecovery}
+				where diseaseid = #{diseaseid}
+	</update>
+</mapper>

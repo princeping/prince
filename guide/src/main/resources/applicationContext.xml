@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<util:properties id="jdbc" location="classpath:jdbc.properties" />
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="#{jdbc.driver}" />
+		<property name="url" value="#{jdbc.url}" />
+		<property name="username" value="#{jdbc.username}" />
+		<property name="password" value="#{jdbc.password}" />
+		<!-- 从数据源中返回的连接是否采用自动提交机制 -->
+		<property name="defaultAutoCommit" value="true" />
+		<!-- 是否仅能执行只读操作 -->
+		<property name="defaultReadOnly" value="false" />
+		<!-- 初始化数据库连接数 -->
+		<property name="initialSize" value="0" />
+		<!-- 最大连接数据库连接数，设置为0时，表示没有限制 -->
+		<property name="maxActive" value="10" />
+		<!-- 最大等待连接中的数量，设置为0时，表示没有限制 -->
+		<property name="maxIdle" value="1" />
+		<!-- 最大等待秒数，单位为毫秒 -->
+		<property name="maxWait" value="6000" />
+		<property name="testWhileIdle" value="true" />
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<property name="numTestsPerEvictionRun" value="1" />
+		<property name="validationQuery" value="select 1" />
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:MyBatis.xml" />
+		<property name="mapperLocations" value="classpath:domain/*.xml" />
+	</bean>
+
+	<!-- mybatis.spring自动映射，DAO接口所在包名，Spring会自动查找其下的类 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+		<property name="basePackage" value="com.prince.guide.dao" />
+	</bean>
+
+	<!-- 事务管理 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 开启事务控制的注解支持 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- 配置redis连接池 -->
+	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="#{jdbc.redismaxIdle}" />  <!-- 最大空闲数 -->
+		<property name="maxTotal" value="#{jdbc.redismaxActive}" />  <!-- 最大连接数 -->
+		<property name="maxWaitMillis" value="#{jdbc.redismaxWait}" />  <!-- 最长等待时间 -->
+		<property name="testOnBorrow" value="#{jdbc.redistestOnBorrow}" />  <!-- 测试连接是否可用 -->
+	</bean>
+
+	<!-- 连接配置 地址、端口 -->
+	<bean id="connectionFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="hostName" value="#{jdbc.redishostName}" />
+		<property name="port" value="#{jdbc.redisport}" />
+		<property name="poolConfig" ref="poolConfig" />
+	</bean>
+
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+	</bean>
+
+	<bean id="redisUtil" class="com.prince.guide.util.redis.impl.RedisUtilImpl">
+		<property name="redisTemplate" ref="redisTemplate" />
+	</bean>
+
+	<import resource="spring-hbase.xml" />
+
+	<context:component-scan base-package="com.prince.guide" />
+
+</beans>

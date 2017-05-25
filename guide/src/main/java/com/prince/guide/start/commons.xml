@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<!-- 原始文件路径 -->
+	<filepaths>
+		<record>E:/guide/record.txt</record>
+		<reimburse>E:/guide/reimburse.txt</reimburse>
+		<resultdata>E:/guide/resultdata</resultdata>
+	</filepaths>
+	<!-- hdfs文件路径 -->
+	<hdfspaths>
+		<todaypath>/prince/MedicalGuidance</todaypath>
+		<mergeoutput>/prince/mergeoutput</mergeoutput>
+		<hospitaloutput>/prince/hospitaloutput</hospitaloutput>
+		<diseaseoutput>/prince/diseaseoutput</diseaseoutput>
+		<hdiseaseoutput>/prince/hdiseaseoutput</hdiseaseoutput>
+		<historydata>/prince/historydata</historydata>
+	</hdfspaths>
+</config>

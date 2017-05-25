@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+  	<property>
+		<name>hbase.rootdir</name>  
+		<value>hdfs://master1.hadoop:9000/hbase</value>
+	</property>
+
+	<property>
+		<name>hbase.cluster.distributed</name>
+		<value>true</value>   
+	</property>
+
+	<property>
+		<name>hbase.zookeeper.quorum</name>
+		<value>master1.hadoop,slave1.hadoop,slave2.hadoop</value>
+	</property>
+
+	<property>
+		<name>hbase.zookeeper.property.dataDir</name>
+		<value>/home/hadoop/hbase-1.2.2/tmp/zookeeper</value>
+	</property>
+</configuration>
