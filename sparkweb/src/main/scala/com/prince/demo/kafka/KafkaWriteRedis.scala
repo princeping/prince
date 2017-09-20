@@ -1,3 +1,7 @@
+/**
+  *kafka中接收的数据格式：{"aim":"circle","filter1":"n3f164f9e9999eefa13064ac1e864fd8","filter2":"zbd6f5791a99249c3a513b21ce835038","startTime":"1503364335167","stopTime":"1503364338007"}
+  */
+
 package com.prince.demo.kafka
 
 import com.prince.demo.hbase.HBaseClient
