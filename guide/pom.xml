@@ -13,7 +13,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.apache.hadoop.version>2.7.2</org.apache.hadoop.version>
 		<spring.version>4.3.3.RELEASE</spring.version>
-		<log4j.version>2.5</log4j.version>
+		<log4j.version>2.13.3</log4j.version>
 		<org.apache.hbase.version>1.2.2</org.apache.hbase.version>
 	</properties>
 
